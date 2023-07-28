@@ -9,7 +9,7 @@ User=root
 WorkingDirectory=/my_kids_ai_test_bot
 ExecStart=/my_kids_ai_test_bot/env/bin/python /my_kids_ai_test_bot/bot.py
 RestartSec=5
-Restart=always.gitignore
+Restart=always
  
 [Install]
 WantedBy=multi-user.target
