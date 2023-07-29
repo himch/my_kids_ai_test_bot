@@ -8,21 +8,10 @@
 
 import asyncio
 from aiogram import types
-from decorator import decorator
 
 from config import DEVELOPER_ID, ADMIN_ID
-from dbase import dbase, user_is_admin
-from messages import messages
+from dbase import dbase
 from misc import bot
-
-
-@decorator
-async def admin_only(coro, *args):
-    admin = await user_is_admin(*args)
-    if not admin:
-        await args[0].answer(messages["not_admin"])
-        return True
-    return await coro(*args)
 
 
 async def get_user_data(data, message):
@@ -31,17 +20,16 @@ async def get_user_data(data, message):
     return dbase.add_user(data['db_tgid'], message.chat.id)
 
 
-async def print_user(tg_id):
+async def print_user(tg_id, print_tg_id=True):
     try:
         user = await bot.get_chat(tg_id)
     except Exception:
-        return ('<a href="tg://user?id=' + str(tg_id) + '">' +
-                "-- утрачен --, id = " + str(tg_id) + "</a>")
+        result = f'<a href="tg://user?id={tg_id}">-- утрачен --, id = {tg_id}</a>'
     else:
         last_name = '' if user.last_name is None else ' ' + str(user.last_name)
         full_name = user.first_name + last_name
-        return ('<a href="tg://user?id=' + str(tg_id) + '">' + full_name +
-                ", id = " + str(tg_id) + "</a>")
+        result = f'<a href="tg://user?id={tg_id}">{full_name}'
+    return result + (f', id = {tg_id}</a>' if print_tg_id else '</a>')
 
 
 async def print_user_list(message, users, row_index):
@@ -55,7 +43,7 @@ async def print_user_list(message, users, row_index):
                              reply_markup=types.ReplyKeyboardRemove())
 
 
-async def send_info_to_dev_admin(bot, st, keyboard=None):
+async def send_info_to_dev_admin(st, keyboard=None):
     try:
         await bot.send_message(DEVELOPER_ID, st, reply_markup=keyboard)
     except Exception:

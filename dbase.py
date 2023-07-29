@@ -55,7 +55,6 @@ class DB:
             self.open_connection()
             self.cursor.execute(f"SELECT * FROM users")
             records = self.cursor.fetchall()
-            self.connection.close()
             return records
         except sqlite3.Error as error:
             print("SQLite error:", error)
@@ -68,7 +67,6 @@ class DB:
             self.open_connection()
             self.cursor.execute("DELETE FROM users")
             self.connection.commit()
-            self.connection.close()
         except sqlite3.Error as error:
             print("SQLite error:", error)
         finally:

@@ -9,6 +9,6 @@
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
-class States(StatesGroup):
-    wait_for = State()
-
+class StatesLoadMedia(StatesGroup):
+    wait_for_media_caption = State()
+    wait_for_media = State()
