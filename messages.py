@@ -1,10 +1,10 @@
-# -----------------------------------------------------------
-# messages panel for Telegram bot
-#
-# (C) 2023 Sergey Khimchenko, St.-Petersburg, Russia
-# Released under GNU Public License (GPL)
-# email skhimchenko@gmail.com
-# -----------------------------------------------------------
+"""
+messages panel for Telegram bot
+
+(C) 2023 Sergey Khimchenko, St.-Petersburg, Russia
+Released under GNU Public License (GPL)
+email skhimchenko@gmail.com
+"""
 
 messages = dict()
 messages['start_message'] = ('Привет, [user] ❤️\n\n'

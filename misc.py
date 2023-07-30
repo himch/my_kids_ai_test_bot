@@ -1,10 +1,10 @@
-# -----------------------------------------------------------
-# misc for Telegram bot
-#
-# (C) 2023 Sergey Khimchenko, St.-Petersburg, Russia
-# Released under GNU Public License (GPL)
-# email skhimchenko@gmail.com
-# -----------------------------------------------------------
+"""
+misc for Telegram bot
+
+(C) 2023 Sergey Khimchenko, St.-Petersburg, Russia
+Released under GNU Public License (GPL)
+email skhimchenko@gmail.com
+""""
 
 import logging
 from aiogram import Bot, Dispatcher
