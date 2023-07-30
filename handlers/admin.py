@@ -7,9 +7,11 @@
 # -----------------------------------------------------------
 import os
 
+import aiogram
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ContentType
+from aiogram.utils.exceptions import FileIsTooBig
 
 from audio_speech_recognition import recognizer
 from decorators import admin_only
@@ -104,19 +106,23 @@ async def handle_load_video(message: types.Message, state: FSMContext):
     # admin zone - load new photo
     async with state.proxy() as data:
         path = os.path.join(FILES_DIRECTORY, video_btn, data['admin_media_caption'])
-        await message.video.download(destination_file=path, make_dirs=True)
-        await message.answer("Готово, видео загружено", reply_markup=types.ReplyKeyboardRemove())
+        try:
+            await message.video.download(destination_file=path, make_dirs=True)
+        except FileIsTooBig as e:
+            await message.answer("Ошибка FileIsTooBig", reply_markup=types.ReplyKeyboardRemove())
+        else:
+            await message.answer("Готово, видео загружено", reply_markup=types.ReplyKeyboardRemove())
         await message.answer(messages["admin_tip"])
         await state.set_state(None)
 
 
 @admin_only
-@dp.message_handler(state=StatesLoadMedia.wait_for_media, content_types=ContentType.VOICE)
+@dp.message_handler(state=StatesLoadMedia.wait_for_media, content_types=ContentType.AUDIO)
 async def handle_load_voice(message: types.Message, state: FSMContext):
     # admin zone - load new voice
     async with state.proxy() as data:
         path = os.path.join(FILES_DIRECTORY, voice_btn, data['admin_media_caption'])
-        await message.voice.download(destination_file=path, make_dirs=True)
+        await message.audio.download(destination_file=path, make_dirs=True)
         await message.answer("Готово, звуковое загружено", reply_markup=types.ReplyKeyboardRemove())
         await message.answer(messages["admin_tip"])
         await state.set_state(None)
