@@ -22,7 +22,7 @@ async def all_other_messages(message: types.Message):
     if the message content type is text, and &quot;Зачем тут это?&quot; otherwise.
 
     :param message: types.Message: Pass the message object to the function
-    :return: A message that the bot does not understand
+    :return: Nothing
     """
     if message.content_type == types.ContentTypes.TEXT:
         await message.reply("Ничего не понимаю!")

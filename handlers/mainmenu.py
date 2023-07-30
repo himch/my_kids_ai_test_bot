@@ -37,7 +37,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message object,
     :param state: FSMContext: Store the state of a user
-    :return: The main menu keyboard
+    :return: Nothing
     """
     async with state.proxy() as data:
         user_added = await get_user_data(data, message)
@@ -65,7 +65,7 @@ async def cmd_select_media_type(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message that was sent by the user
     :param state: FSMContext: Store the state of the conversation
-    :return: The text of the selected media type
+    :return: Nothing
     """
     async with state.proxy() as data:
         data['db_media_type'] = message.text
@@ -85,7 +85,7 @@ async def cmd_answer_media(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message sent by the user
     :param state: FSMContext: Store the state of the conversation
-    :return: The media file with the specified name
+    :return: Nothing
     """
     async with state.proxy() as data:
         filename = message.text[2:]
@@ -117,7 +117,7 @@ async def cmd_about(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message that was sent by the user
     :param state: FSMContext: Store the state of the conversation
-    :return: The about message
+    :return: Nothing
     """
     async with state.proxy() as data:
         await message.answer(messages["about"].replace("[user]", await print_user(DEVELOPER_ID, print_tg_id=False)),
@@ -133,7 +133,7 @@ async def cmd_github(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message object
     :param state: FSMContext: Store the state of the user
-    :return: The github link of the bot
+    :return: Nothing
     """
     async with state.proxy() as data:
         await message.answer(messages["github"],
@@ -150,7 +150,7 @@ async def cmd_speech_recognition(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message that was sent by the user
     :param state: FSMContext: Store the state of the conversation
-    :return: A message that the bot is waiting for a voice command
+    :return: Nothing
     """
     async with state.proxy() as data:
         await message.answer(messages["voice_commands"])
@@ -167,7 +167,7 @@ async def handle_wait_for_voice_command(message: types.Message, state: FSMContex
 
     :param message: types.Message: Get the message that was sent by the user
     :param state: FSMContext: Store data during a conversation
-    :return: The state of the conversation
+    :return: Nothing
     """
     async with state.proxy() as data:
         filename = str(datetime.now()).translate(str.maketrans({' ': '_', ':': '-', '.': '_'}))
@@ -198,6 +198,13 @@ async def handle_wait_for_voice_command(message: types.Message, state: FSMContex
 
 @dp.message_handler(Text(equals=back_btn, ignore_case=True), state="*")
 async def cmd_back(message: types.Message, state: FSMContext):
+    """
+    The cmd_back function is a command handler that returned user back to the main menu
+
+    :param message: types.Message: Get the message that was sent by the user
+    :param state: FSMContext: Store data during a conversation
+    :return: Nothing
+    """
     """Return to main menu."""
     async with state.proxy() as data:
         await message.answer("Продолжим?", reply_markup=main_menu_keyboard)

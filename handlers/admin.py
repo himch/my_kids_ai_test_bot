@@ -40,7 +40,7 @@ async def cmd_cancel(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message object
     :param state: FSMContext: Store the state of the conversation
-    :return: None
+    :return: Nothing
     """
     await message.answer("Отменено", reply_markup=types.ReplyKeyboardRemove())
     await message.answer(messages["admin_tip"])
@@ -59,7 +59,7 @@ async def cmd_admin(message: types.Message):
     It displays all of the available commands for an admin to use, and then waits for them to select one.
 
     :param message: types.Message: Get the message object
-    :return: A list of admin commands
+    :return: Nothing
     """
     await message.answer(messages["admin_commands"], reply_markup=types.ReplyKeyboardRemove())
 
@@ -74,7 +74,7 @@ async def cmd_all_users(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message that was sent by the user
     :param state: FSMContext: Store information about the current state of the user
-    :return: A list of all users
+    :return: Nothing
     """
     await message.answer("Список пользователей:", reply_markup=types.ReplyKeyboardRemove())
     await print_user_list(message, dbase.get_all_users(), 0)
@@ -94,7 +94,7 @@ async def cmd_delete_all_users(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message that was sent by the user
     :param state: FSMContext: Store the state of the conversation
-    :return: None
+    :return: Nothing
     """
     dbase.delete_all_users()
     await message.answer("Готово", reply_markup=types.ReplyKeyboardRemove())
@@ -111,8 +111,7 @@ async def cmd_start_load_new_content(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Get the message sent by the user
     :param state: FSMContext: Store the state of the conversation
-    :return: A string
-    :doc-author: Trelent
+    :return: Nothing
     """
     await message.answer(f"Введи название {message.text[5:]} или нажми /cancel для отмены",
                          reply_markup=types.ReplyKeyboardRemove())
@@ -129,7 +128,7 @@ async def handle_load_media_caption(message: types.Message, state: FSMContext):
 
     :param message: types.Message: Access the message sent by the user
     :param state: FSMContext: Store the state of the conversation
-    :return: None
+    :return: Nothing
     """
     async with state.proxy() as data:
         data['admin_media_caption'] = message.text
@@ -141,8 +140,16 @@ async def handle_load_media_caption(message: types.Message, state: FSMContext):
 @admin_only
 @dp.message_handler(state=StatesLoadMedia.wait_for_media, content_types=ContentType.PHOTO)
 async def handle_load_photo(message: types.Message, state: FSMContext):
+    """
+    The handle_load_photo function is used to load a new photo into the bot.
+    It takes two arguments: message and state. The message argument is an object of type types.Message,
+    which contains all the information about the user's request (text, attachments, etc.).
+    The state argument is an object of type FSMContext that allows us to store data between function calls.
 
-    # admin zone - load new photo
+    :param message: types.Message: Pass the message object to the handler
+    :param state: FSMContext: Store the state of our conversation
+    :return: Nothing
+    """
     async with state.proxy() as data:
         path = os.path.join(FILES_DIRECTORY, photo_btn, data['admin_media_caption'])
         await message.photo[-1].download(destination_file=path, make_dirs=True)
@@ -151,11 +158,20 @@ async def handle_load_photo(message: types.Message, state: FSMContext):
         await state.set_state(None)
 
 
+
 @admin_only
 @dp.message_handler(state=StatesLoadMedia.wait_for_media, content_types=ContentType.VIDEO)
 async def handle_load_video(message: types.Message, state: FSMContext):
+    """
+    The handle_load_video function is used to load a video file into the FILES_DIRECTORY.
+    The function takes two arguments: message and state. The message argument is an instance of the Message class,
+    and it contains all information about the incoming message from a user. The state argument is an instance of
+    the FSMContext class, which allows us to store data in memory for each user separately.
 
-    # admin zone - load new photo
+    :param message: types.Message: Get the message object
+    :param state: FSMContext: Access the current state of the user
+    :return: Nothing
+    """
     async with state.proxy() as data:
         path = os.path.join(FILES_DIRECTORY, video_btn, data['admin_media_caption'])
         try:
@@ -168,10 +184,22 @@ async def handle_load_video(message: types.Message, state: FSMContext):
         await state.set_state(None)
 
 
+
 @admin_only
 @dp.message_handler(state=StatesLoadMedia.wait_for_media, content_types=ContentType.AUDIO)
 async def handle_load_voice(message: types.Message, state: FSMContext):
-    # admin zone - load new voice
+    """
+    The handle_load_voice function is a callback function for the load_voice state.
+    It handles the loading of new voice files into the bot.
+    The handle_load_voice function takes two arguments: message and state,
+    which are both required by all callback functions.
+    The message argument is an instance of types.Message, which contains
+    information about a user's request to load new voice files into the bot's database.
+
+    :param message: types.Message: Get the message from the user
+    :param state: FSMContext: Store the state of the conversation
+    :return: Nothing
+    """
     async with state.proxy() as data:
         path = os.path.join(FILES_DIRECTORY, voice_btn, data['admin_media_caption'])
         await message.audio.download(destination_file=path, make_dirs=True)
@@ -180,11 +208,21 @@ async def handle_load_voice(message: types.Message, state: FSMContext):
         await state.set_state(None)
 
 
+
 @admin_only
 @dp.message_handler(state=StatesLoadMedia.wait_for_media, content_types=ContentType.TEXT)
 async def handle_load_post(message: types.Message, state: FSMContext):
-    # admin zone - load new post
+    """
+    The handle_load_post function is used to load a new post into the bot.
+    It takes in two arguments: message and state.
+    The message argument is the text of the post that will be loaded into the bot,
+    while state contains information about
+    the current user's session with this function.
 
+    :param message: types.Message: Get the message sent by the user
+    :param state: FSMContext: Store the state of the conversation
+    :return: Nothing
+    """
     async with state.proxy() as data:
         folder = os.path.join(FILES_DIRECTORY, posts_btn)
         if not os.path.exists(folder):
@@ -196,14 +234,24 @@ async def handle_load_post(message: types.Message, state: FSMContext):
         await state.set_state(None)
 
 
+
 @admin_only
 @dp.message_handler(commands="test_speech_recognizer", state="*")
 async def cmd_test_speech_recognizer(message: types.Message, state: FSMContext):
-    # admin zone - test speech recognizer
+    """
+    The cmd_test_speech_recognizer function is used to test the speech recognizer.
+        Args:
+            message (types.Message): The incoming Telegram message object that triggered this function call.
+            state (FSMContext): The FSM context object for the current user session.
 
+    :param message: types.Message: Get the message that was sent to the bot
+    :param state: FSMContext: Store the state of the conversation
+    :return: True if the speech recognition subsystem is working properly,
+    """
     if recognizer.test():
         await message.answer("Подсистема распознования речи в порядке", reply_markup=types.ReplyKeyboardRemove())
     else:
-        await message.answer("Что-то пошло не так", reply_markup=types.ReplyKeyboardRemove())
+        await message.answer("Что-то пошло не так",
+                             reply_markup=types.ReplyKeyboardRemove())
     await message.answer(messages["admin_tip"])
     await state.set_state(None)
